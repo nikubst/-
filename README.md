@@ -57,9 +57,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # نصب پکیج‌ها
-pip install -r requirements-bot.txt
+pip install -r bot/requirements-bot.txt
 
 # اجرای تست‌های اعتبارسنجی سیستم
+cd bot
 python3 test_system.py
 
 # اجرای نهایی ربات

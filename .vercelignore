@@ -1,10 +1,4 @@
-main.py
-test_system.py
-requirements.txt
-database
-handlers
-keyboards
-middlewares
-utils
-config.py
+bot
 .venv
+bot_database.db
+web_showcase
