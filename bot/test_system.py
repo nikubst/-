@@ -68,7 +68,35 @@ async def run_tests():
         )
         prod2.set_images(["dummy_photo_file_id_2"])
 
-        session.add_all([prod1, prod2])
+        prod3 = Product(
+            code="P-103",
+            title="فرش ۶ متری دستباف اصفهان طرح لچک ترنج شاه‌عباسی",
+            category="فرش دستباف اعلا",
+            dimensions="۲ در ۳ متر (۶ متری)",
+            raj_shomar="۶۵ رج فوق‌اعلا",
+            pattern_name="لچک ترنج شاه‌عباسی با رنگرزی لاجوردی",
+            material="چله ابریشم خالص، خامه پشم دست‌چین و مرینوس",
+            price=145000000,
+            marketing_pitch="شاهکار اصیل هنرمندان اصفهان با بافت ریزبافت ۶۵ رج، چله ابریشم صد در صد طبیعی، ماندگاری قرنی و ارزش موزه‌ای برای فضاهای اشرافی.",
+            is_available=True
+        )
+        prod3.set_images(["dummy_photo_file_id_3"])
+
+        prod4 = Product(
+            code="P-104",
+            title="قالیچه دستباف عشایری قشقایی شیراز طرح هور",
+            category="دستباف عشایری و روستایی",
+            dimensions="۱.۲۰ در ۱.۸۰ متر",
+            raj_shomar="۴۰ رج سنتی",
+            pattern_name="طرح ذهنی‌باف هندسی با نقوش پرندگان و ترنج",
+            material="پشم طبیعی بهاره دست‌ریس، رنگرزی ۱۰۰٪ گیاهی سنتی",
+            price=28000000,
+            marketing_pitch="بافت ارگانیک و اصیل ایلیاتی بدون استفاده از نقشه کاغذی، فوق‌العاده گرمابخش برای دکوراسیون‌های مدرن، بوهو و مینیمال با رنگ‌های زنده روناس و نیل.",
+            is_available=True
+        )
+        prod4.set_images(["dummy_photo_file_id_4"])
+
+        session.add_all([prod1, prod2, prod3, prod4])
 
         # ایجاد یک درخواست استخدام تستی
         app = JobApplication(
@@ -95,7 +123,7 @@ async def run_tests():
         print("🚀 [3/4] بررسی اعتبارسنجی پرس‌وجوها (Queries)...")
         # تست خواندن محصولات
         prods = (await session.execute(select(Product))).scalars().all()
-        assert len(prods) == 2, f"Expected 2 products, got {len(prods)}"
+        assert len(prods) == 4, f"Expected 4 products, got {len(prods)}"
         print(f"📦 محصولات ثبت شده: {[p.title for p in prods]}")
 
         # تست خواندن درخواست استخدام
