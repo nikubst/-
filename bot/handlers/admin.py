@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 
 from config import settings
-from database.models import User, JobApplication, Product, Marketer
+from database.models import User, JobApplication, Product, Marketer, Customer
 from keyboards.reply import get_cancel_kb, get_main_menu
 from keyboards.admin_kb import (
     get_admin_main_kb,
@@ -519,3 +519,49 @@ async def execute_broadcast(message: Message, session: AsyncSession, state: FSMC
         f"✅ ارسال همگانی با موفقیت به پایان رسید.\nتعداد پیام‌های تحویل داده شده: {sent_count} از {len(user_ids)}",
         reply_markup=get_admin_main_kb()
     )
+
+
+# ------------------ گزارش مشتریان رتبه اعتباری A و B ------------------
+
+@router.message(F.text == "💎 مشتریان رتبه A و B")
+async def send_vip_customers_report(message: Message, session: AsyncSession):
+    if not is_admin(message.from_user.id):
+        return
+
+    stmt = select(Customer).where(Customer.credit_rating.in_(["A", "B"])).order_by(Customer.credit_rating, desc(Customer.total_spent))
+    result = await session.execute(stmt)
+    customers = result.scalars().all()
+
+    if not customers:
+        await message.answer(
+            "💎 **گزارش مشتریان با رتبه اعتباری:**\n\n"
+            "در حال حاضر هیچ مشتری با رتبه اعتباری A یا B در سیستم ثبت نشده است.",
+            reply_markup=get_admin_main_kb()
+        )
+        return
+
+    # تفکیک تعداد
+    a_customers = [c for c in customers if c.credit_rating == "A"]
+    b_customers = [c for c in customers if c.credit_rating == "B"]
+
+    header_text = (
+        "💎 **لیست مشتریان ممتاز با رتبه اعتباری A و B:**\n\n"
+        f"🌟 **رتبه A (فوق‌العاده معتبر / VIP):** {len(a_customers)} نفر\n"
+        f"⭐ **رتبه B (خوش‌حساب و متعهد):** {len(b_customers)} نفر\n"
+        "➖➖➖➖➖➖➖➖➖➖"
+    )
+    await message.answer(header_text)
+
+    for i, c in enumerate(customers, 1):
+        star = "🌟 رتبه A (عالی/VIP)" if c.credit_rating == "A" else "⭐ رتبه B (خوش‌حساب)"
+        card = (
+            f"👤 **{i}. {c.full_name}**\n"
+            f"🏅 **رتبه اعتباری:** {star}\n"
+            f"📱 **شماره تلفن:** `{c.phone}`\n"
+            f"🏙️ **شهر سکونت:** {c.city}\n"
+            f"💰 **مجموع خریدها:** {c.total_spent:,} تومان ({c.total_purchases} معامله موفق)\n"
+        )
+        if c.notes:
+            card += f"📝 **توضیحات سابقه:** {c.notes}\n"
+
+        await message.answer(card, parse_mode="Markdown")

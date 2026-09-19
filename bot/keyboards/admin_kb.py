@@ -4,7 +4,8 @@ def get_admin_main_kb() -> ReplyKeyboardMarkup:
     buttons = [
         [KeyboardButton(text="📋 بررسی درخواست‌های استخدام"), KeyboardButton(text="➕ افزودن محصول جدید")],
         [KeyboardButton(text="📦 مدیریت موجودی و محصولات"), KeyboardButton(text="👥 آمار بازاریاب‌ها و فروش")],
-        [KeyboardButton(text="📢 ارسال پیام همگانی"), KeyboardButton(text="🔙 بازگشت به منوی اصلی")]
+        [KeyboardButton(text="💎 مشتریان رتبه A و B"), KeyboardButton(text="📢 ارسال پیام همگانی")],
+        [KeyboardButton(text="🔙 بازگشت به منوی اصلی")]
     ]
     return ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 

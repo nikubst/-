@@ -134,3 +134,24 @@ class ReferralLead(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     marketer = relationship("Marketer", back_populates="leads")
+
+
+class Customer(Base):
+    __tablename__ = "customers"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    telegram_id = Column(BigInteger, nullable=True, index=True)
+    full_name = Column(String(255), nullable=False)
+    phone = Column(String(50), nullable=False, index=True)
+    city = Column(String(100), nullable=False, index=True)
+    
+    # رتبه اعتباری: A (عالی/خوش‌حساب)، B (خوب)، C (متوسط)، D (نیازمند بررسی)
+    credit_rating = Column(String(10), nullable=False, default="B", index=True)
+    
+    total_purchases = Column(Integer, default=1)
+    total_spent = Column(BigInteger, default=0)
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Customer {self.full_name} - {self.city} - Rating: {self.credit_rating}>"

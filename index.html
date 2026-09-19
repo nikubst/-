@@ -497,6 +497,10 @@
           <span>⚙️ ۴. کارتابل ادمین (تأیید/نقص)</span>
           <span class="feature-tag">مدیریت</span>
         </button>
+        <button class="scenario-btn" onclick="triggerScenario('vip_customers')">
+          <span>💎 ۵. مشتریان رتبه A و B</span>
+          <span class="feature-tag">شهر و تلفن</span>
+        </button>
       </div>
 
       <div class="card">
@@ -686,6 +690,41 @@
               </div>
               <div class="inline-row">
                 <button class="inline-btn" style="color:#f59e0b; border-color: rgba(245,158,11,0.4)" onclick="adminAction('needinfo')">⚠️ اعلام نقص مدارک</button>
+              </div>
+            </div>
+          `);
+        }, 400);
+      }
+      else if (type === 'vip_customers') {
+        if (needUserEcho) appendUserMessage('💎 استعلام مشتریان رتبه اعتباری A و B');
+        setTimeout(() => {
+          appendBotMessage(`
+            💎 <b>لیست مشتریان ممتاز با رتبه اعتباری A و B (به همراه شهر و تلفن):</b><br><br>
+            🌟 <b>رتبه A (فوق‌العاده معتبر / VIP):</b> ۲ نفر<br>
+            ⭐ <b>رتبه B (خوش‌حساب و متعهد):</b> ۱ نفر<br>
+            ➖➖➖➖➖➖➖➖➖➖<br><br>
+            👤 <b>۱. حاج محمد تبریزی</b><br>
+            🏅 رتبه اعتباری: 🌟 رتبه A (عالی/VIP)<br>
+            📱 شماره تلفن: <code>۰۹۱۴۱۱۱۲۲۳۳</code><br>
+            🏙️ شهر سکونت: <b>تبریز</b><br>
+            💰 مجموع خریدها: ۱۸۵,۰۰۰,۰۰۰ تومان (۴ معامله موفق)<br>
+            📝 سابقه: خریدار قدیمی و معتبر، تسویه نقدی فوری<br><br>
+            👤 <b>۲. دکتر بهرامی</b><br>
+            🏅 رتبه اعتباری: 🌟 رتبه A (عالی/VIP)<br>
+            📱 شماره تلفن: <code>۰۹۱۳۲۲۲۳۳۴۴</code><br>
+            🏙️ شهر سکونت: <b>اصفهان</b><br>
+            💰 مجموع خریدها: ۱۲۰,۰۰۰,۰۰۰ تومان (۲ معامله موفق)<br>
+            📝 سابقه: کلکسیونر تابلوفرش نفیس، مشتری ویژه VIP<br><br>
+            👤 <b>۳. مهندس کاظمی</b><br>
+            🏅 رتبه اعتباری: ⭐ رتبه B (خوش‌حساب)<br>
+            📱 شماره تلفن: <code>۰۹۱۷۳۳۳۴۴۵۵</code><br>
+            🏙️ شهر سکونت: <b>شیراز</b><br>
+            💰 مجموع خریدها: ۶۵,۰۰۰,۰۰۰ تومان (۱ معامله موفق)<br>
+            📝 سابقه: سفارش قالیچه خطیبی با تسویه منظم
+            <div class="inline-kb">
+              <div class="inline-row">
+                <button class="inline-btn btn-success" onclick="appendBotMessage('📥 فایل اکسل کامل مشتریان رتبه A و B دانلود شد.')">📥 خروجی فایل اکسل</button>
+                <button class="inline-btn" onclick="appendBotMessage('🔍 فیلتر شهر اعمال شد: ۳ مشتری از شهرهای تبریز، اصفهان، شیراز')">🏙️ فیلتر بر اساس شهر</button>
               </div>
             </div>
           `);

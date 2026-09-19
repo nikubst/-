@@ -2,7 +2,7 @@ import asyncio
 import sys
 from sqlalchemy import select
 from database.session import init_db, async_session_maker
-from database.models import User, JobApplication, Product, Marketer, ReferralLead
+from database.models import User, JobApplication, Product, Marketer, ReferralLead, Customer
 
 async def run_tests():
     print("🚀 [1/4] تست اولیه ایجاد جداول در پایگاه داده...")
@@ -108,6 +108,57 @@ async def run_tests():
         apps[0].admin_notes = "لطفاً تصویر شفاف‌تری از کارت ملی ارسال فرمایید."
         await session.commit()
         print(f"⚠️ تست تغییر وضعیت پرونده به نقص مدرک: {apps[0].status} -> {apps[0].admin_notes}")
+
+        # تست مشتریان رتبه اعتباری A و B
+        cust1 = Customer(
+            full_name="حاج محمد تبریزی",
+            phone="09141112233",
+            city="تبریز",
+            credit_rating="A",
+            total_purchases=4,
+            total_spent=185000000,
+            notes="خریدار قدیمی و معتبر، تسویه نقدی فوری"
+        )
+        cust2 = Customer(
+            full_name="دکتر بهرامی",
+            phone="09132223344",
+            city="اصفهان",
+            credit_rating="A",
+            total_purchases=2,
+            total_spent=120000000,
+            notes="کلکسیونر تابلوفرش نفیس، مشتری ویژه VIP"
+        )
+        cust3 = Customer(
+            full_name="مهندس کاظمی",
+            phone="09173334455",
+            city="شیراز",
+            credit_rating="B",
+            total_purchases=1,
+            total_spent=65000000,
+            notes="خوش‌حساب، سفارش قالیچه خطیبی"
+        )
+        cust4 = Customer(
+            full_name="خانم کریمی",
+            phone="09154445566",
+            city="مشهد",
+            credit_rating="C",
+            total_purchases=1,
+            total_spent=25000000,
+            notes="مشتری عادی"
+        )
+        session.add_all([cust1, cust2, cust3, cust4])
+
+        await session.commit()
+        print("✅ مشتریان با رتبه‌های اعتباری A و B و شهر و شماره تماس ثبت گردیدند.")
+
+        # استعلام فقط رتبه‌های A و B
+        vip_custs = (await session.execute(
+            select(Customer).where(Customer.credit_rating.in_(["A", "B"])).order_by(Customer.credit_rating)
+        )).scalars().all()
+        assert len(vip_custs) == 3, f"Expected 3 VIP customers, got {len(vip_custs)}"
+        print(f"💎 مشتریان رتبه A و B استخراج‌شده ({len(vip_custs)} نفر):")
+        for c in vip_custs:
+            print(f"   • {c.full_name} | رتبه: {c.credit_rating} | شهر: {c.city} | تلفن: {c.phone} | خرید: {c.total_spent:,} تومان")
 
         # تست بازاریاب و رفرال
         mrk = (await session.execute(select(Marketer))).scalar_one()
